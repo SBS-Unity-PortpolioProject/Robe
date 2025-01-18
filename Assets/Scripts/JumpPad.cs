@@ -17,7 +17,12 @@ public class JumpPad : MonoBehaviour
             // 접근을 하는데 중간에 메모리 접근이 실패할 경우에 크래쉬(게임이 튕기거나 비정상적인 종료)가 나는 경우가 있습니다.
             // 그래서 중간에 캐시를 해서 없을 경우에 예외처리를 하는 게 훨씬 안정적으로 플레이를 할 수 있습니다. 
             // 만약 에러가 나면 팝업을 띄운다거나 LogError를 통해서 에러메세지를 남기는 방식으로 구현하면 됩니다.
-            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * bounce, ForceMode2D.Impulse);
+            Rigidbody2D rigid = collision.gameObject.GetComponent<Rigidbody2D>();
+            if (rigid != null)
+            {
+                rigid.AddForce(Vector2.up * bounce, ForceMode2D.Impulse);
+            }
+            else { Debug.Log("error"); }
         }
     }
 }
