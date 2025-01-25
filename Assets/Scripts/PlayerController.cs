@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -13,10 +14,10 @@ public class PlayerController : MonoBehaviour
     private bool canDash = true;
     private bool isDashing;
     private float dashingPower = 24f;
-    private float dashingtime = 0.5f;
+    private float dashingtime = 0.2f;
     private float dashingCooldown = 1f;
 
-    [SerializeField] private TrailRenderer tr;
+    
 
     public int doubleJump
     {
@@ -121,6 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -177,6 +179,9 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
     }
 
+    private List<DashEffect> dashEffects = null;
+    public List<DashEffect> DashEffects => dashEffects ??= GetComponentsInChildren<DashEffect>(true).ToList();
+
 
     private IEnumerator Dash()
     {
@@ -185,11 +190,18 @@ public class PlayerController : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
         rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
-        tr.emitting = true;
-        yield return new WaitForSeconds(dashingtime);
-        tr.emitting = false;
+        foreach (var effect in DashEffects)
+        {
+            yield return new WaitForSeconds(dashingtime + effect.Delay * effect.tr.position.x);
+            effect.OnEffect();
+        }
+        //yield return new WaitForSeconds(dashingtime);
         rb.gravityScale = originalGravity;
         isDashing = false;
+        foreach (var effect in DashEffects)
+        {
+            effect.OffEffect();
+        }
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
