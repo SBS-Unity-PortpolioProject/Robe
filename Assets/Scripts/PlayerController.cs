@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     private bool canDash = true;
     private bool isDashing;
-    private float dashingPower = 24f;
+    [SerializeField] private float dashingPower = 24f;
     private float dashingtime = 0.2f;
     private float dashingCooldown = 1f;
 
@@ -109,19 +109,20 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!CanMove) 
+            return;
+        if (isDashing)
+            return;
         if (!lockvelocity)
         {
             rb.velocity = new Vector2(moveInput.x * Speed, rb.velocity.y);
         }
-        rb.velocity = new Vector2(moveInput.x * Speed, rb.velocity.y);
+
         if (touchingDirection.IsGrounded)
         {
             doubleJump = 0;
         }
-        if(isDashing)
-        {
-            return;
-        }
+
 
     }
 
@@ -166,9 +167,10 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        if (context.started && canDash)
+        if (context.started && canDash && CanMove)
         {
             StartCoroutine(Dash());
+            StartCoroutine(OnShowEffect());
         }
     }
 
@@ -179,8 +181,8 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
     }
 
-    private List<DashEffect> dashEffects = null;
-    public List<DashEffect> DashEffects => dashEffects ??= GetComponentsInChildren<DashEffect>(true).ToList();
+    //private List<DashEffect> DF = null;
+    //public List<DashEffect> DashEffects => dashEffects ??= GetComponentsInChildren<DashEffect>(true).ToList();
 
 
     private IEnumerator Dash()
@@ -190,20 +192,42 @@ public class PlayerController : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
         rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
-        foreach (var effect in DashEffects)
-        {
-            yield return new WaitForSeconds(dashingtime + effect.Delay * effect.tr.position.x);
-            effect.OnEffect();
-        }
-        //yield return new WaitForSeconds(dashingtime);
+        yield return new WaitForSeconds(dashingtime);
         rb.gravityScale = originalGravity;
         isDashing = false;
-        foreach (var effect in DashEffects)
-        {
-            effect.OffEffect();
-        }
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+    }
+
+    [SerializeField] private DashEffect dashEffect;
+    [SerializeField] private List<DashEffect> dashEffects = new List<DashEffect>();
+    [SerializeField] private int dashEffectCount = 10;
+    [SerializeField] private float elapsedTime = 0.1f;
+    [SerializeField] private float duration = 0.05f;
+
+    SpriteRenderer _spriteRenderer;
+    public SpriteRenderer SpriteRenderer => _spriteRenderer ??= GetComponent<SpriteRenderer>();
+
+    private void Start()
+    {
+        for (int i = dashEffects.Count; i < dashEffectCount; i++)
+        {
+            DashEffect obj = Instantiate(dashEffect);
+            dashEffects.Add(obj);
+            obj.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator OnShowEffect()
+    {
+        int index = 1;
+        int count = dashEffects.Count;
+        foreach (var effect in dashEffects)
+        {
+            effect.OnShowEffect(transform, SpriteRenderer.sprite, count - index, elapsedTime);
+            index++;
+            yield return new WaitForSeconds(duration);
+        }
     }
 }
 

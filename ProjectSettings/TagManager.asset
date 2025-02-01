@@ -44,3 +44,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Item
+    uniqueID: 3170418681
+    locked: 0
+  - name: Enemy
+    uniqueID: 1095145757
+    locked: 0
+  - name: JumpPad
+    uniqueID: 3243205399
+    locked: 0
+  - name: Obstacle
+    uniqueID: 4279810331
+    locked: 0
+  - name: Ground
+    uniqueID: 3593335427
+    locked: 0
+  - name: Player
+    uniqueID: 164302377
+    locked: 0

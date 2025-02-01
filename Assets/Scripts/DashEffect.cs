@@ -9,23 +9,23 @@ using UnityEngine.Rendering;
 
 public class DashEffect : MonoBehaviour
 {
-    SpriteRenderer spriteRenderer;
-    SpriteRenderer SpriteRenderer => spriteRenderer ??= GetComponent<SpriteRenderer>();
-    
+    SpriteRenderer _spriteRenderer;
+    public SpriteRenderer SpriteRenderer => _spriteRenderer ??= GetComponent<SpriteRenderer>();
 
-    public float Delay = 0.5f;
-    Transform transform;
-    public Transform tr => transform ??= GetComponent<Transform>();
 
-    public void OnEffect()
+    public void OnShowEffect(Transform trans, Sprite sprite, int index, float duration)
     {
-        SpriteRenderer PspriteRenderer = GetComponentInParent<SpriteRenderer>();
-        transform.gameObject.SetActive(true);
-        SpriteRenderer.sprite = PspriteRenderer.sprite;
+        this.gameObject.SetActive(true);
+        SpriteRenderer.sprite = sprite;
+        transform.position = trans.position;
+        transform.localScale = trans.localScale;
+        SpriteRenderer.color = new Color(1, 1, 1, 1f / index);
+        StartCoroutine(ProcessEffect(duration));
     }
 
-    public void OffEffect()
+    private IEnumerator ProcessEffect(float duration = 0.2f)
     {
-        transform.gameObject.SetActive(false);
+        yield return new WaitForSeconds(duration);
+        this.gameObject.SetActive(false);
     }
 }

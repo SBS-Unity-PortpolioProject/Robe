@@ -7,7 +7,7 @@ public class HealthPickUP : MonoBehaviour
     [SerializeField] public int healthRestore = 25;
     public Vector3 spinRotatinoSpeed = new Vector3(0, 180, 0);
 
-    private void Start()
+    private void FixedUpdate()
     {
         transform.eulerAngles += spinRotatinoSpeed * Time.deltaTime;
     }
