@@ -18,7 +18,6 @@ public class StompableComponent : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player") && damageable != null)
         {
-
             damageable.Hit(damageable.MaxHealth, knockback);
 
             PlayerController playercontroller = collision.gameObject.GetComponent<PlayerController>();

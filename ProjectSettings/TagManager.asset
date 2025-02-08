@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Star1
+  - Star2
+  - Star3
+  - Invincible
   layers:
   - Default
   - TransparentFX
@@ -61,4 +65,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 164302377
+    locked: 0
+  - name: Star
+    uniqueID: 2416854891
     locked: 0

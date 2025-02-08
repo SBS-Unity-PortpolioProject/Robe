@@ -7,7 +7,6 @@ public class Damageable : MonoBehaviour
 {
     public UnityEvent<int, Vector2> damageableHit;
     public UnityEvent<float, float> HealthChangeEvent;
-
     [SerializeField] private int _maxHealth = 100;
     private Animator animator;
 
@@ -69,10 +68,15 @@ public class Damageable : MonoBehaviour
     {
         if (isInvincible)
         {
-            if (timeSInceHit > invincibilityTime)
+            if (gameObject.CompareTag("Player"))
+            {
+                gameObject.tag = "Invincible";
+            }
+            if (timeSInceHit > invincibilityTime + 1)
             {
                 isInvincible = false;
                 timeSInceHit = 0;
+                gameObject.tag = "Player";
             }
 
             timeSInceHit += Time.deltaTime;
@@ -84,6 +88,10 @@ public class Damageable : MonoBehaviour
         if(IsAlive && !isInvincible)
         {
             Health -= damage;
+            if (gameObject.CompareTag("Player"))
+            {
+                GameManager.Instance.CurrentHealth = Health;
+            }
             isInvincible = true;
 
             animator.SetTrigger("hit");
@@ -101,7 +109,10 @@ public class Damageable : MonoBehaviour
             int maxHeal = Mathf.Max(MaxHealth - Health, 0);
             int actualHeal = Mathf.Min(maxHeal, healthRestore);
             Health += actualHeal;
-
+            if (gameObject.CompareTag("Player"))
+            {
+                GameManager.Instance.CurrentHealth = Health;
+            }
             return true;
         }
         return false;

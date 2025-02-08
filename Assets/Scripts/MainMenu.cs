@@ -8,5 +8,8 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadSceneAsync(1);
+        GameManager.Instance.FailTime = Time.time;
+        GameManager.Instance.CurrentHealth = 100;
+
     }
 }

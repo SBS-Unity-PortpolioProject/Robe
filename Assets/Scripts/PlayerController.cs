@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     private bool canDash = true;
     private bool isDashing;
-    [SerializeField] private float dashingPower = 24f;
+    [SerializeField] private Vector2 dashingPower = new Vector2(5,2);
     private float dashingtime = 0.2f;
     private float dashingCooldown = 1f;
 
@@ -159,8 +159,8 @@ public class PlayerController : MonoBehaviour
 
         if(context.started && !touchingDirection.IsGrounded && CanMove && doubleJump < 1)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
             doubleJump++;
+            rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
         }
       
     }
@@ -169,6 +169,15 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started && canDash && CanMove)
         {
+            if(dashEffects.Count <= dashEffectCount)
+            {
+                for (int i = dashEffects.Count; i < dashEffectCount; i++)
+                {
+                    DashEffect obj = Instantiate(dashEffect);
+                    dashEffects.Add(obj);
+                    obj.gameObject.SetActive(false);
+                }
+            }
             StartCoroutine(Dash());
             StartCoroutine(OnShowEffect());
         }
@@ -189,11 +198,13 @@ public class PlayerController : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
-        rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
+        //float originalGravity = rb.gravityScale;
+        //rb.gravityScale = 0f;
+        Vector2 vel = dashingPower * rb.velocity.normalized;
+        vel.y = Mathf.Abs(vel.y);
+        rb.velocity = vel;
         yield return new WaitForSeconds(dashingtime);
-        rb.gravityScale = originalGravity;
+        //rb.gravityScale = originalGravity;
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
