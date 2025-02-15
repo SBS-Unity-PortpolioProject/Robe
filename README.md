@@ -1,4 +1,4 @@
-![Robe_SBS 2025-02-15 오후 6_25_24](https://github.com/user-attachments/assets/92d6a44f-23fc-4a8c-9d78-bb72d9f7c2c5)
+
 # SBS 김혜린 포트폴리오
 
 ---
