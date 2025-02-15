@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class Damageable : MonoBehaviour
 {
     public UnityEvent<int, Vector2> damageableHit;
-    public UnityEvent<float, float> HealthChangeEvent;
+
     [SerializeField] private int _maxHealth = 100;
     private Animator animator;
 
@@ -38,7 +38,7 @@ public class Damageable : MonoBehaviour
         set
         {
             _health = value;
-            if(_health <= 0)
+            if (_health <= 0)
             {
                 IsAlive = false;
             }
@@ -91,9 +91,9 @@ public class Damageable : MonoBehaviour
             if (gameObject.CompareTag("Player"))
             {
                 GameManager.Instance.CurrentHealth = Health;
+                GameManager.Instance.HealthChangeEvent.Invoke(Health, MaxHealth);
             }
             isInvincible = true;
-
             animator.SetTrigger("hit");
             damageableHit?.Invoke(damage, knockback);
 
@@ -112,6 +112,7 @@ public class Damageable : MonoBehaviour
             if (gameObject.CompareTag("Player"))
             {
                 GameManager.Instance.CurrentHealth = Health;
+                GameManager.Instance.HealthChangeEvent.Invoke(Health, MaxHealth);
             }
             return true;
         }

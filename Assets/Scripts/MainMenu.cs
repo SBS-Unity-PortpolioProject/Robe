@@ -12,4 +12,9 @@ public class MainMenu : MonoBehaviour
         GameManager.Instance.CurrentHealth = 100;
 
     }
+
+    public void OnExitGame()
+    {
+        Application.Quit();
+    }
 }

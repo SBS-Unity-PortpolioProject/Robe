@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
+
+    public UnityEvent<float, float> HealthChangeEvent = new();
 
     public int FinalHealth;
 

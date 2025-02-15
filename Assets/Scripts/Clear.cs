@@ -5,35 +5,29 @@ using UnityEngine.UI;
 
 public class Clear : MonoBehaviour
 {
-    Image _UnactiveStar;
-    Image UnactiveStar => _UnactiveStar ??= GetComponent<Image>();
     [SerializeField] private Sprite ActiveStar;
-
-    public void Star2()
+    [SerializeField] List<Image> Stars = new List<Image>();
+    int index = 0;
+    bool TimerCheck = false;
+    bool HealthCheck = false;
+    public void Star()
     {
-        if(GameManager.Instance.FinalHealth == 100)
+        if(GameManager.Instance.FinalHealth == 100 && index < 2 && !HealthCheck)
         {
-            UnactiveStar.sprite = ActiveStar;
+            Stars[index].sprite = ActiveStar;
+            index++;
+            HealthCheck = true;
         }
-    }
-
-    public void Star3()
-    {
-        if(GameManager.Instance.ClearTime <= 100)
+        if (GameManager.Instance.ClearTime <= 100 && index < 2 && !TimerCheck)
         {
-            UnactiveStar.sprite= ActiveStar;
+            Stars[index].sprite = ActiveStar;
+            index++;
+            TimerCheck = true;
         }
     }
 
     private void FixedUpdate()
     {
-        if (gameObject != null && gameObject.CompareTag("Star2"))
-        {
-            Star2();
-        }
-        if (gameObject != null && gameObject.CompareTag("Star3"))
-        {
-            Star3();
-        }
+        Star();
     }
 }
